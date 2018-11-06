@@ -21,28 +21,28 @@ C++14 or later is required
 Create static string from string literal
 
 ```cpp
-constexpr auto str = make_static_string("Hello"); // str == "Hello"
+constexpr auto str = "Hello"_ss; // str == "Hello"
 constexpr size_t size = sizeof(str); // size == 6, str ends with '\0'
 ```
 
 Output static string to standard output stream
 
 ```cpp
-constexpr auto str = make_static_string("Hello");
+constexpr auto str = "Hello"_ss;
 std::cout << str << std::endl;
 ```
 
 Convert static string to std::string
 
 ```cpp
-constexpr auto str = make_static_string("Hello");
+constexpr auto str = "Hello"_ss;
 std::string str1 = to_string(str);
 ```
 
 Get static string length and size
 
 ```cpp
-constexpr auto str = make_static_string("Hello");
+constexpr auto str = "Hello"_ss;
 constexpr size_t length = str.length(); // length == 5
 constexpr size_t size = str.size(); // size == 6
 ```
@@ -50,7 +50,7 @@ constexpr size_t size = str.size(); // size == 6
 Access static string symbols
 
 ```cpp
-constexpr auto str = make_static_string("Hello");
+constexpr auto str = "Hello"_ss;
 constexpr char ch1 = str[1]; // ch1 == 'e'
 constexpr char ch4 = str[4]; // ch4 == 'o'
 constexpr char ch5 = str[5]; // ch5 == '\0'
@@ -59,7 +59,7 @@ constexpr char ch5 = str[5]; // ch5 == '\0'
 Iterate through static string
 
 ```cpp
-constexpr auto str = make_static_string("Hello");
+constexpr auto str = "Hello"_ss;
 for (size_t i = str.begin(); i != str.end(); ++i) // forward
     std::cout << str[i];
 std::cout << std::endl; // Hello
@@ -71,7 +71,7 @@ std::cout << std::endl; // olleH
 Calculate static string or string literal hash
 
 ```cpp
-constexpr auto str = make_static_string("Hello");
+constexpr auto str = "Hello"_ss;
 constexpr unsigned long long hash1 = str.hash();
 constexpr unsigned long long hash2 = static_string_hash("World");
 // hash(s) = (s[0] + 1) + (s[1] + 1) * 33 + ... + (s[n - 1] + 1) * 33 ^ (n - 1) + 5381 * 33 ^ n mod 2 ^ 64
@@ -80,8 +80,8 @@ constexpr unsigned long long hash2 = static_string_hash("World");
 Compare two static strings or string literals
 
 ```cpp
-constexpr auto str1 = make_static_string("Hello");
-constexpr auto str2 = make_static_string("World");
+constexpr auto str1 = "Hello"_ss;
+constexpr auto str2 = "World"_ss;
 static_assert(str1 < str2, "true");
 static_assert(str1 >= str2, "false");
 static_assert(str1 == "Hello", "true");
@@ -99,7 +99,7 @@ constexpr auto str = ITOSS(num); // str == "12345";
 Convert static string or string literal to number
 
 ```cpp
-constexpr auto str1 = make_static_string("12345");
+constexpr auto str1 = "12345"_ss;
 constexpr char str2[] = "67890";
 constexpr int num1 = SSTOI(str1); // num1 == 12345
 constexpr int num2 = SSTOI(str2); // num2 == 67890
@@ -108,8 +108,8 @@ constexpr int num2 = SSTOI(str2); // num2 == 67890
 Concatenate static strings and string literals
 
 ```cpp
-constexpr auto hello = make_static_string("Hello");
-constexpr auto world = make_static_string("World");
+constexpr auto hello = "Hello"_ss;
+constexpr auto world = "World"_ss;
 constexpr auto greeting = hello + ", " + world + "!"; // greeting == "Hello, World!"
 ```
 
@@ -143,7 +143,7 @@ constexpr auto message = static_string_concat("The first quarter has ended with 
 Find character in static string or string literal
 
 ```cpp
-constexpr auto str = make_static_string("abracadabra");
+constexpr auto str = "abracadabra"_ss;
 constexpr auto p1 = str.find('d'); // p1 == 6
 constexpr auto p2 = str.find('e'); // p2 == static_string_npos
 constexpr auto p3 = str.find('a'); // p3 == 0
@@ -159,7 +159,7 @@ constexpr auto p10 = static_string_rfind("abracadabra", 'b'); // p10 == 8
 Find substring in static string or string literal
 
 ```cpp
-constexpr auto str = make_static_string("abracadabra");
+constexpr auto str = "abracadabra"_ss;
 constexpr auto p1 = str.find("ada"); // p1 == 5
 constexpr auto p2 = str.find("dbr"); // p2 == static_string_npos
 constexpr auto p3 = str.find("ab"); // p3 == 0
@@ -175,7 +175,7 @@ constexpr auto p10 = static_string_rfind("abracadabra", "ab"); // p10 == 7
 Check if static string or string literal starts/ends with or contains specified substring
 
 ```cpp
-constexpr auto str = make_static_string("abracadabra");
+constexpr auto str = "abracadabra"_ss;
 static_assert(str.starts_with("abra"), "true");
 static_assert(str.starts_with("brac"), "false");
 static_assert(str.ends_with("abra"), "true");
@@ -194,7 +194,7 @@ static_assert(static_string_contains("abracadabra", "brac"), "true");
 Get number of char occurrences in static string or string literal 
 
 ```cpp
-constexpr auto str = make_static_string("abracadabra");
+constexpr auto str = "abracadabra"_ss;
 constexpr size_t cnt1 = str.count('a'); // cnt1 == 5
 constexpr size_t cnt2 = static_string_count("abracadabra", 'a'); // cnt2 == 5
 ```
@@ -202,7 +202,7 @@ constexpr size_t cnt2 = static_string_count("abracadabra", 'a'); // cnt2 == 5
 Reverse static substring or string literal
 
 ```cpp
-constexpr auto hello = make_static_string("Hello");
+constexpr auto hello = "Hello"_ss;
 constexpr auto str1 = hello.reverse(); // str1 == "olleH"
 constexpr auto str2 = static_string_reverse("World"); // str2 == "dlroW"
 ```
@@ -210,7 +210,7 @@ constexpr auto str2 = static_string_reverse("World"); // str2 == "dlroW"
 Get substring, prefix or suffix of static string or string literal
 
 ```cpp
-constexpr auto hello = make_static_string("Hello");
+constexpr auto hello = "Hello"_ss;
 constexpr auto str1 = hello.substring<1, 4>(); // str1 == "ell";
 constexpr auto str2 = hello.prefix<4>(); // str2 == "Hell";
 constexpr auto str3 = hello.suffix<1>(); // str3 == "ello";
@@ -222,7 +222,7 @@ constexpr auto str6 = static_string_suffix<1>("World"); // str6 == "orld";
 Split static string or string literal
 
 ```cpp
-constexpr auto a = make_static_string("abracadabra");
+constexpr auto a = "abracadabra"_ss;
 constexpr auto p1 = a.split<5>(); // p1 == {"abrac", "dabra"}
 constexpr auto p2 = a.split<a.find('d')>(); // p2 == {"abraca", "abra"}
 constexpr auto p3 = a.split<a.find('a', a.begin(), 1)>(); // p3 == {"abr", "cadabra"}
@@ -233,7 +233,7 @@ constexpr auto p5 = static_string_split<5>("abracadabra"); // p5 == {"abrac", "d
 Split static string into substrings and numbers
 
 ```cpp
-constexpr auto url = make_static_string("http://www.server.com:8080");
+constexpr auto url = "http://www.server.com:8080"_ss;
 constexpr auto p = url.find("://");
 constexpr auto protocol = url.prefix<p>(); // protocol == "http"
 constexpr auto sockaddr = url.suffix<p + 3>();

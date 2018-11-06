@@ -1,6 +1,6 @@
 /*
 Compile-time string manipulation library for modern C++
-version 0.0.29
+version 0.0.30
 https://github.com/snw1/static-string-cpp
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>.
@@ -122,19 +122,29 @@ struct make_signed_int_char_sequence<false, 0, Chars ...> : char_sequence<Chars 
 template<>
 struct make_signed_int_char_sequence<false, 0> : char_sequence<'0'> {};
 
+template<size_t Size>
+constexpr static_string<Size> make_static_string_impl(const static_string<Size>& str) {
+    return str;
+}
+
+template<size_t Size>
+constexpr static_string<Size> make_static_string_impl(const char (& str)[Size]) {
+    return make_static_string_impl(str, __static_string_detail::make_index_sequence<Size - 1>{});
+}
+
 template<char ... Chars>
-constexpr static_string<sizeof ... (Chars) + 1> make_static_string(char_sequence<Chars ...>) {
+constexpr static_string<sizeof ... (Chars) + 1> make_static_string_impl(char_sequence<Chars ...>) {
     return {Chars ..., '\0'};
 }
 
 template<size_t Size, size_t ... Indexes>
-constexpr static_string<sizeof ... (Indexes) + 1> make_static_string(const char (& str)[Size],
+constexpr static_string<sizeof ... (Indexes) + 1> make_static_string_impl(const char (& str)[Size],
     __static_string_detail::index_sequence<Indexes ...>) {
     return {str[Indexes] ..., '\0'};
 }
 
 template<size_t Size, size_t ... Indexes>
-constexpr static_string<sizeof ... (Indexes) + 1> make_static_string(const static_string<Size>& str,
+constexpr static_string<sizeof ... (Indexes) + 1> make_static_string_impl(const static_string<Size>& str,
     __static_string_detail::index_sequence<Indexes ...>) {
     return {str.data[Indexes] ..., '\0'};
 }
@@ -297,6 +307,11 @@ template<size_t Size> struct static_string {
     std::array<const char, Size> data;
 };
 
+template<typename Char, Char ... Chars>
+constexpr static_string<sizeof ... (Chars) + 1> operator"" _ss() {
+    return {Chars ..., '\0'};
+};
+
 template<size_t Size>
 std::ostream& operator<<(std::ostream& os, const static_string<Size>& str) {
     os << str.data.data();
@@ -306,20 +321,6 @@ std::ostream& operator<<(std::ostream& os, const static_string<Size>& str) {
 template<size_t Size>
 std::string to_string(const static_string<Size>& str) {
     return std::string(str.data.data());
-}
-
-constexpr static_string<1> make_static_string() {
-    return {'\0'};
-}
-
-template<size_t Size>
-constexpr static_string<Size> make_static_string(const static_string<Size>& str) {
-    return str;
-}
-
-template<size_t Size>
-constexpr static_string<Size> make_static_string(const char (& str)[Size]) {
-    return make_static_string(str, __static_string_detail::make_index_sequence<Size - 1>{});
 }
 
 constexpr size_t static_length() {
@@ -356,17 +357,17 @@ constexpr int static_string_compare(const static_string<Size1>& str1, const stat
 
 template<size_t Size1, size_t Size2>
 constexpr int static_string_compare(const static_string<Size1>& str1, const char (& str2)[Size2]) {
-    return static_string_compare(str1, make_static_string(str2));
+    return static_string_compare(str1, __static_string_detail::make_static_string_impl(str2));
 }
 
 template<size_t Size1, size_t Size2>
 constexpr int static_string_compare(const char (& str1)[Size1], const static_string<Size2>& str2) {
-    return static_string_compare(make_static_string(str1), str2);
+    return static_string_compare(__static_string_detail::make_static_string_impl(str1), str2);
 }
 
 template<size_t Size1, size_t Size2>
 constexpr int static_string_compare(const char (& str1)[Size1], const char (& str2)[Size2]) {
-    return static_string_compare(make_static_string(str1), make_static_string(str2));
+    return static_string_compare(__static_string_detail::make_static_string_impl(str1), __static_string_detail::make_static_string_impl(str2));
 }
 
 template<size_t Size1, size_t Size2>
@@ -460,12 +461,12 @@ constexpr bool operator>=(const char (& str1)[Size1], const static_string<Size2>
 }
 
 constexpr auto static_string_concat() {
-    return make_static_string();
+    return __static_string_detail::make_static_string_impl("");
 }
 
 template<typename Arg, typename ... Args>
 constexpr auto static_string_concat(Arg&& arg, Args&& ... args) {
-    return __static_string_detail::static_string_concat_impl(make_static_string(std::forward<Arg>(arg)),
+    return __static_string_detail::static_string_concat_impl(__static_string_detail::make_static_string_impl(std::forward<Arg>(arg)),
         static_string_concat(std::forward<Args>(args) ...));
 }
 
@@ -476,36 +477,36 @@ constexpr auto operator+(const static_string<Size1>& str1, const static_string<S
 
 template<size_t Size1, size_t Size2>
 constexpr auto operator+(const static_string<Size1>& str1, const char (& str2)[Size2]) {
-    return __static_string_detail::static_string_concat_impl(str1, make_static_string(str2));
+    return __static_string_detail::static_string_concat_impl(str1, __static_string_detail::make_static_string_impl(str2));
 }
 
 template<size_t Size1, size_t Size2>
 constexpr auto operator+(const char (& str1)[Size1], const static_string<Size2>& str2) {
-    return __static_string_detail::static_string_concat_impl(make_static_string(str1), str2);
+    return __static_string_detail::static_string_concat_impl(__static_string_detail::make_static_string_impl(str1), str2);
 }
 
 template<size_t Size>
 constexpr auto static_string_reverse(const static_string<Size>& str) {
-    return make_static_string(str, __static_string_detail::make_reverse_index_sequence<Size - 1>{});
+    return __static_string_detail::make_static_string_impl(str, __static_string_detail::make_reverse_index_sequence<Size - 1>{});
 }
 
 template<size_t Size>
 constexpr auto static_string_reverse(const char (& str)[Size]) {
-    return make_static_string(str, __static_string_detail::make_reverse_index_sequence<Size - 1>{});
+    return __static_string_detail::make_static_string_impl(str, __static_string_detail::make_reverse_index_sequence<Size - 1>{});
 }
 
 template<size_t Begin, size_t End, size_t Size>
 constexpr auto static_string_substring(const static_string<Size>& str) {
     static_assert(Begin <= End, "Begin is greater than End (Begin > End)");
     static_assert(End <= Size - 1, "End is greater than string length (End > Size - 1)");
-    return make_static_string(str, __static_string_detail::make_index_subsequence<Begin, End>{});
+    return __static_string_detail::make_static_string_impl(str, __static_string_detail::make_index_subsequence<Begin, End>{});
 }
 
 template<size_t Begin, size_t End, size_t Size>
 constexpr auto static_string_substring(const char (& str)[Size]) {
     static_assert(Begin <= End, "Begin is greater than End (Begin > End)");
     static_assert(End <= Size - 1, "End is greater than string length (End > Size - 1)");
-    return make_static_string(str, __static_string_detail::make_index_subsequence<Begin, End>{});
+    return __static_string_detail::make_static_string_impl(str, __static_string_detail::make_index_subsequence<Begin, End>{});
 }
 
 template<size_t End, size_t Size>
@@ -537,7 +538,7 @@ constexpr size_t static_string_find(const static_string<Size>& str, char ch, siz
 
 template<size_t Size>
 constexpr size_t static_string_find(const char (& str)[Size], char ch, size_t from = 0, size_t nth = 0) {
-    return static_string_find(make_static_string(str), ch, from, nth);
+    return static_string_find(__static_string_detail::make_static_string_impl(str), ch, from, nth);
 }
 
 template<size_t Size, size_t SubSize>
@@ -549,17 +550,17 @@ constexpr size_t static_string_find(const static_string<Size>& str, const static
 
 template<size_t Size, size_t SubSize>
 constexpr size_t static_string_find(const char (& str)[Size], const static_string<SubSize>& substr, size_t from = 0, size_t nth = 0) {
-    return static_string_find(make_static_string(str), substr, from, nth);
+    return static_string_find(__static_string_detail::make_static_string_impl(str), substr, from, nth);
 }
 
 template<size_t Size, size_t SubSize>
 constexpr size_t static_string_find(const static_string<Size>& str, const char (& substr)[SubSize], size_t from, size_t nth) {
-    return static_string_find(str, make_static_string(substr), from, nth);
+    return static_string_find(str, __static_string_detail::make_static_string_impl(substr), from, nth);
 }
 
 template<size_t Size, size_t SubSize>
 constexpr size_t static_string_find(const char (& str)[Size], const char (& substr)[SubSize], size_t from = 0, size_t nth = 0) {
-    return static_string_find(make_static_string(str), make_static_string(substr), from, nth);
+    return static_string_find(__static_string_detail::make_static_string_impl(str), __static_string_detail::make_static_string_impl(substr), from, nth);
 }
 
 template<size_t Size>
@@ -571,7 +572,7 @@ constexpr size_t static_string_rfind(const static_string<Size>& str, char ch, si
 
 template<size_t Size>
 constexpr size_t static_string_rfind(const char (& str)[Size], char ch, size_t from = Size - 2, size_t nth = 0) {
-    return static_string_rfind(make_static_string(str), ch, from, nth);
+    return static_string_rfind(__static_string_detail::make_static_string_impl(str), ch, from, nth);
 }
 
 template<size_t Size, size_t SubSize>
@@ -583,17 +584,17 @@ constexpr size_t static_string_rfind(const static_string<Size>& str, const stati
 
 template<size_t Size, size_t SubSize>
 constexpr size_t static_string_rfind(const char (& str)[Size], const static_string<SubSize>& substr, size_t from = Size - SubSize, size_t nth = 0) {
-    return static_string_rfind(make_static_string(str), substr, from, nth);
+    return static_string_rfind(__static_string_detail::make_static_string_impl(str), substr, from, nth);
 }
 
 template<size_t Size, size_t SubSize>
 constexpr size_t static_string_rfind(const static_string<Size>& str, const char (& substr)[SubSize], size_t from, size_t nth) {
-    return static_string_rfind(str, make_static_string(substr), from, nth);
+    return static_string_rfind(str, __static_string_detail::make_static_string_impl(substr), from, nth);
 }
 
 template<size_t Size, size_t SubSize>
 constexpr size_t static_string_rfind(const char (& str)[Size], const char (& substr)[SubSize], size_t from = Size - SubSize, size_t nth = 0) {
-    return static_string_rfind(make_static_string(str), make_static_string(substr), from, nth);
+    return static_string_rfind(__static_string_detail::make_static_string_impl(str), __static_string_detail::make_static_string_impl(substr), from, nth);
 }
 
 template<size_t Size>
@@ -603,7 +604,7 @@ constexpr bool static_string_contains(const static_string<Size>& str, char ch) {
 
 template<size_t Size>
 constexpr bool static_string_contains(const char (& str)[Size], char ch) {
-    return static_string_contains(make_static_string(str), ch);
+    return static_string_contains(__static_string_detail::make_static_string_impl(str), ch);
 }
 
 template<size_t Size, size_t SubSize>
@@ -613,17 +614,17 @@ constexpr bool static_string_contains(const static_string<Size>& str, const stat
 
 template<size_t Size, size_t SubSize>
 constexpr bool static_string_contains(const static_string<Size>& str, const char (& substr)[SubSize]) {
-    return static_string_contains(str, make_static_string(substr));
+    return static_string_contains(str, __static_string_detail::make_static_string_impl(substr));
 }
 
 template<size_t Size, size_t SubSize>
 constexpr bool static_string_contains(const char (& str)[Size], const static_string<SubSize>& substr) {
-    return static_string_contains(make_static_string(str), substr);
+    return static_string_contains(__static_string_detail::make_static_string_impl(str), substr);
 }
 
 template<size_t Size, size_t SubSize>
 constexpr bool static_string_contains(const char (& str)[Size], const char (& substr)[SubSize]) {
-    return static_string_contains(make_static_string(str), make_static_string(substr));
+    return static_string_contains(__static_string_detail::make_static_string_impl(str), __static_string_detail::make_static_string_impl(substr));
 }
 
 template<size_t Size>
@@ -633,7 +634,7 @@ constexpr size_t static_string_count(const static_string<Size>& str, char ch) {
 
 template<size_t Size>
 constexpr size_t static_string_count(const char (& str)[Size], char ch) {
-    return static_string_count(make_static_string(str), ch);
+    return static_string_count(__static_string_detail::make_static_string_impl(str), ch);
 }
 
 template<size_t SubSize, size_t Size>
@@ -644,17 +645,17 @@ constexpr bool static_string_starts_with(const static_string<Size>& str, const s
 
 template<size_t SubSize, size_t Size>
 constexpr bool static_string_starts_with(const char (& str)[Size], const static_string<SubSize>& prefix) {
-    return static_string_starts_with(make_static_string(str), prefix);
+    return static_string_starts_with(__static_string_detail::make_static_string_impl(str), prefix);
 }
 
 template<size_t SubSize, size_t Size>
 constexpr bool static_string_starts_with(const static_string<Size>& str, const char (& prefix)[SubSize]) {
-    return static_string_starts_with(str, make_static_string(prefix));
+    return static_string_starts_with(str, __static_string_detail::make_static_string_impl(prefix));
 }
 
 template<size_t SubSize, size_t Size>
 constexpr bool static_string_starts_with(const char (& str)[Size], const char (& prefix)[SubSize]) {
-    return static_string_starts_with(make_static_string(str), make_static_string(prefix));
+    return static_string_starts_with(__static_string_detail::make_static_string_impl(str), __static_string_detail::make_static_string_impl(prefix));
 }
 
 template<size_t SubSize, size_t Size>
@@ -665,17 +666,17 @@ constexpr bool static_string_ends_with(const static_string<Size>& str, const sta
 
 template<size_t SubSize, size_t Size>
 constexpr bool static_string_ends_with(const char (& str)[Size], const static_string<SubSize>& suffix) {
-    return static_string_ends_with(make_static_string(str), suffix);
+    return static_string_ends_with(__static_string_detail::make_static_string_impl(str), suffix);
 }
 
 template<size_t SubSize, size_t Size>
 constexpr bool static_string_ends_with(const static_string<Size>& str, const char (& suffix)[SubSize]) {
-    return static_string_ends_with(str, make_static_string(suffix));
+    return static_string_ends_with(str, __static_string_detail::make_static_string_impl(suffix));
 }
 
 template<size_t SubSize, size_t Size>
 constexpr bool static_string_ends_with(const char (& str)[Size], const char (& suffix)[SubSize]) {
-    return static_string_ends_with(make_static_string(str), make_static_string(suffix));
+    return static_string_ends_with(__static_string_detail::make_static_string_impl(str), __static_string_detail::make_static_string_impl(suffix));
 }
 
 template<size_t Index, size_t Size>
@@ -685,7 +686,7 @@ constexpr auto static_string_split(const static_string<Size>& str) {
 
 template<size_t Index, size_t Size>
 constexpr auto static_string_split(const char (& str)[Size]) {
-    return static_string_split<Index>(make_static_string(str));
+    return static_string_split<Index>(__static_string_detail::make_static_string_impl(str));
 }
 
 template<size_t Size>
@@ -695,17 +696,17 @@ constexpr unsigned long long static_string_hash(const static_string<Size>& str) 
 
 template<size_t Size>
 constexpr unsigned long long static_string_hash(const char (& str)[Size]) {
-    return static_string_hash(make_static_string(str));
+    return static_string_hash(__static_string_detail::make_static_string_impl(str));
 }
 
 template<long long Value>
 constexpr auto int_to_static_string() {
-    return make_static_string(__static_string_detail::make_signed_int_char_sequence<(Value < 0), Value>{});
+    return __static_string_detail::make_static_string_impl(__static_string_detail::make_signed_int_char_sequence<(Value < 0), Value>{});
 }
 
 template<unsigned long long Value>
 constexpr auto uint_to_static_string() {
-    return make_static_string(__static_string_detail::make_unsigned_int_char_sequence<Value>{});
+    return __static_string_detail::make_static_string_impl(__static_string_detail::make_unsigned_int_char_sequence<Value>{});
 }
 
 template<size_t Size>
@@ -715,7 +716,7 @@ constexpr long long static_string_to_int(const static_string<Size>& str) {
 
 template<size_t Size>
 constexpr long long static_string_to_int(const char (& str)[Size]) {
-    return static_string_to_int(make_static_string(str));
+    return static_string_to_int(__static_string_detail::make_static_string_impl(str));
 }
 
 template<size_t Size>
@@ -725,7 +726,7 @@ constexpr unsigned long long static_string_to_uint(const static_string<Size>& st
 
 template<size_t Size>
 constexpr unsigned long long static_string_to_uint(const char (& str)[Size]) {
-    return static_string_to_uint(make_static_string(str));
+    return static_string_to_uint(__static_string_detail::make_static_string_impl(str));
 }
 
 } // namespace snw1
