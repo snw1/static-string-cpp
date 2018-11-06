@@ -201,7 +201,7 @@ constexpr long long static_string_to_int_impl(const static_string<Size>& str) {
 template<size_t Size>
 constexpr unsigned long long static_string_to_uint_impl(const static_string<Size>& str, size_t index) {
     return Size < 2 || index >= Size - 1 ? 0 :
-        (str.data[index] - '0') + 10LL * static_string_to_uint_impl(str, index - 1);
+        (str.data[index] - '0') + 10ULL * static_string_to_uint_impl(str, index - 1);
 }
 
 } // namespace __static_string_detail
