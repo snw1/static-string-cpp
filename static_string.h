@@ -226,7 +226,7 @@ template<typename Char, size_t Size> struct basic_static_string {
         return Size - 1;
     }
     constexpr size_t size() const {
-        return Size;
+        return Size - 1;
     }
     constexpr size_t begin() const {
         return 0;

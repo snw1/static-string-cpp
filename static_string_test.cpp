@@ -1100,14 +1100,16 @@ int main() {
     // struct methods tests
     constexpr auto ss0 = ""_ss;
     static_assert(ss0.length() == 0, "");
-    static_assert(ss0.size() == 1, "");
+    static_assert(ss0.size() == 0, "");
+    static_assert(sizeof(ss0) == 1, "");
     static_assert(ss0.reverse() == "", "");
     static_assert(ss0.substring<0, 0>() == "", "");
     static_assert(ss0.prefix<0>() == "", "");
     static_assert(ss0.suffix<0>() == "", "");
     constexpr auto ss1 = "Hello"_ss;
     static_assert(ss1.length() == 5, "");
-    static_assert(ss1.size() == 6, "");
+    static_assert(ss1.size() == 5, "");
+    static_assert(sizeof(ss1) == 6, "");
     static_assert(ss1.reverse() == "olleH", "");
     static_assert(ss1.substring<0, 5>() == "Hello", "");
     static_assert(ss1.substring<3, 3>() == "", "");
