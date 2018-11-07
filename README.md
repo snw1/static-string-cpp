@@ -28,8 +28,8 @@ constexpr size_t size = sizeof(str); // size == 6, str ends with '\0'
 Output static string to standard output stream
 
 ```cpp
-constexpr auto str = "Hello"_ss;
-std::cout << str << std::endl;
+constexpr auto str = L"Hello"_ss;
+std::wcout << str << std::endl;
 ```
 
 Convert static string to std::string
@@ -42,7 +42,7 @@ std::string str1 = to_string(str);
 Get static string length and size
 
 ```cpp
-constexpr auto str = "Hello"_ss;
+constexpr auto str = L"Hello"_ss;
 constexpr size_t length = str.length(); // length == 5
 constexpr size_t size = str.size(); // size == 6
 ```
@@ -59,13 +59,13 @@ constexpr char ch5 = str[5]; // ch5 == '\0'
 Iterate through static string
 
 ```cpp
-constexpr auto str = "Hello"_ss;
+constexpr auto str = L"Hello"_ss;
 for (size_t i = str.begin(); i != str.end(); ++i) // forward
-    std::cout << str[i];
-std::cout << std::endl; // Hello
+    std::wcout << str[i];
+std::wcout << std::endl; // Hello
 for (size_t i = str.rbegin(); i != str.rend(); --i) // backward
-    std::cout << str[i];
-std::cout << std::endl; // olleH
+    std::wcout << str[i];
+std::wcout << std::endl; // olleH
 ```
 
 Calculate static string or string literal hash
@@ -80,27 +80,28 @@ constexpr unsigned long long hash2 = static_string_hash("World");
 Compare two static strings or string literals
 
 ```cpp
-constexpr auto str1 = "Hello"_ss;
-constexpr auto str2 = "World"_ss;
+constexpr auto str1 = L"Hello"_ss;
+constexpr auto str2 = L"World"_ss;
 static_assert(str1 < str2, "true");
 static_assert(str1 >= str2, "false");
-static_assert(str1 == "Hello", "true");
-static_assert("World" != str2, "false");
-static_assert(static_string_compare("Hello", "World") < 0, "true");
+static_assert(str1 == L"Hello", "true");
+static_assert(L"World" != str2, "false");
+static_assert(static_string_compare(L"Hello", L"World") < 0, "true");
 ```
 
 Convert number to static string
 
 ```cpp
 constexpr int num = 12345;
-constexpr auto str = ITOSS(num); // str == "12345";
+constexpr auto str1 = ITOSS(num); // str1 == "12345";
+constexpr auto str2 = ITOSW(num); // str2 == L"12345";
 ```
 
 Convert static string or string literal to number
 
 ```cpp
 constexpr auto str1 = "12345"_ss;
-constexpr char str2[] = "67890";
+constexpr wchar_t str2[] = L"67890";
 constexpr int num1 = SSTOI(str1); // num1 == 12345
 constexpr int num2 = SSTOI(str2); // num2 == 67890
 ```
@@ -118,15 +119,15 @@ Concatenate static strings, string literals and numbers
 ```cpp
 constexpr int apples = 5;
 constexpr int oranges = 7;
-constexpr auto message = static_string_concat("I have ", ITOSS(apples), 
-    " apples and ", ITOSS(oranges), ", so I have ", ITOSS(apples + oranges), " fruits");
-// message = "I have 5 apples and 7 oranges, so I have 12 fruits"    
+constexpr auto message = static_wstring::concat(L"I have ", ITOSW(apples), 
+    L" apples and ", ITOSW(oranges), L", so I have ", ITOSW(apples + oranges), L" fruits");
+// message = L"I have 5 apples and 7 oranges, so I have 12 fruits"    
 ```
 
 ```cpp
 constexpr unsigned long long width = 123456789ULL;
 constexpr unsigned long long height = 987654321ULL;
-constexpr auto message = static_string_concat("A rectangle with width ", UTOSS(width), 
+constexpr auto message = static_string::concat("A rectangle with width ", UTOSS(width), 
     " and height ", UTOSS(height), " has area ", UTOSS(width * height));
 // message = "A rectangle with width 123456789 and height 987654321 has area 121932631112635269"    
 ```
@@ -135,9 +136,9 @@ constexpr auto message = static_string_concat("A rectangle with width ", UTOSS(w
 constexpr long long revenue = 1'000'000LL;
 constexpr long long costs = 1'200'000LL;
 constexpr long long profit = revenue - costs;
-constexpr auto message = static_string_concat("The first quarter has ended with net ",
-    (profit >= 0 ? "profit" : "loss  "), " of $", ITOSS(profit < 0 ? -profit : profit));
-// message == "The first quarter has ended with net loss   of $200000"
+constexpr auto message = static_wstring::concat(L"The first quarter has ended with net ",
+    (profit >= 0 ? L"profit" : L"loss  "), L" of $", ITOSW(profit < 0 ? -profit : profit));
+// message == L"The first quarter has ended with net loss   of $200000"
 ```
 
 Find character in static string or string literal
@@ -159,17 +160,17 @@ constexpr auto p10 = static_string_rfind("abracadabra", 'b'); // p10 == 8
 Find substring in static string or string literal
 
 ```cpp
-constexpr auto str = "abracadabra"_ss;
-constexpr auto p1 = str.find("ada"); // p1 == 5
-constexpr auto p2 = str.find("dbr"); // p2 == static_string_npos
-constexpr auto p3 = str.find("ab"); // p3 == 0
-constexpr auto p4 = str.find("ab", 4); // p4 == 7, find from position
-constexpr auto p5 = str.find("ab", str.begin(), 1); // p5 == 7, find 2nd occurrence
-constexpr auto p6 = str.rfind("ab"); // p6 == 7
-constexpr auto p7 = str.rfind("ab", 5); // p7 == 0, find from position
-constexpr auto p8 = str.rfind("ab", str.rbegin(), 1); // p8 == 0, find 2nd occurrence
-constexpr auto p9 = static_string_find("abracadabra", "ab"); // p9 == 0
-constexpr auto p10 = static_string_rfind("abracadabra", "ab"); // p10 == 7
+constexpr auto str = L"abracadabra"_ss;
+constexpr auto p1 = str.find(L"ada"); // p1 == 5
+constexpr auto p2 = str.find(L"dbr"); // p2 == static_string_npos
+constexpr auto p3 = str.find(L"ab"); // p3 == 0
+constexpr auto p4 = str.find(L"ab", 4); // p4 == 7, find from position
+constexpr auto p5 = str.find(L"ab", str.begin(), 1); // p5 == 7, find 2nd occurrence
+constexpr auto p6 = str.rfind(L"ab"); // p6 == 7
+constexpr auto p7 = str.rfind(L"ab", 5); // p7 == 0, find from position
+constexpr auto p8 = str.rfind(L"ab", str.rbegin(), 1); // p8 == 0, find 2nd occurrence
+constexpr auto p9 = static_string_find(L"abracadabra", L"ab"); // p9 == 0
+constexpr auto p10 = static_string_rfind(L"abracadabra", L"ab"); // p10 == 7
 ```
 
 Check if static string or string literal starts/ends with or contains specified substring
@@ -194,9 +195,9 @@ static_assert(static_string_contains("abracadabra", "brac"), "true");
 Get number of char occurrences in static string or string literal 
 
 ```cpp
-constexpr auto str = "abracadabra"_ss;
-constexpr size_t cnt1 = str.count('a'); // cnt1 == 5
-constexpr size_t cnt2 = static_string_count("abracadabra", 'a'); // cnt2 == 5
+constexpr auto str = L"abracadabra"_ss;
+constexpr size_t cnt1 = str.count(L'a'); // cnt1 == 5
+constexpr size_t cnt2 = static_string_count(L"abracadabra", L'a'); // cnt2 == 5
 ```
 
 Reverse static substring or string literal
@@ -210,13 +211,13 @@ constexpr auto str2 = static_string_reverse("World"); // str2 == "dlroW"
 Get substring, prefix or suffix of static string or string literal
 
 ```cpp
-constexpr auto hello = "Hello"_ss;
-constexpr auto str1 = hello.substring<1, 4>(); // str1 == "ell";
-constexpr auto str2 = hello.prefix<4>(); // str2 == "Hell";
-constexpr auto str3 = hello.suffix<1>(); // str3 == "ello";
-constexpr auto str4 = static_string_substring<1, 4>("World"); // str4 == "orl";
-constexpr auto str5 = static_string_prefix<4>("World"); // str5 == "Worl";
-constexpr auto str6 = static_string_suffix<1>("World"); // str6 == "orld";
+constexpr auto hello = L"Hello"_ss;
+constexpr auto str1 = hello.substring<1, 4>(); // str1 == L"ell";
+constexpr auto str2 = hello.prefix<4>(); // str2 == L"Hell";
+constexpr auto str3 = hello.suffix<1>(); // str3 == L"ello";
+constexpr auto str4 = static_string_substring<1, 4>(L"World"); // str4 == L"orl";
+constexpr auto str5 = static_string_prefix<4>(L"World"); // str5 == L"Worl";
+constexpr auto str6 = static_string_suffix<1>(L"World"); // str6 == L"orld";
 ```
 
 Split static string or string literal
@@ -233,12 +234,12 @@ constexpr auto p5 = static_string_split<5>("abracadabra"); // p5 == {"abrac", "d
 Split static string into substrings and numbers
 
 ```cpp
-constexpr auto url = "http://www.server.com:8080"_ss;
-constexpr auto p = url.find("://");
-constexpr auto protocol = url.prefix<p>(); // protocol == "http"
+constexpr auto url = L"http://www.server.com:8080"_ss;
+constexpr auto p = url.find(L"://");
+constexpr auto protocol = url.prefix<p>(); // protocol == L"http"
 constexpr auto sockaddr = url.suffix<p + 3>();
-constexpr auto hp = sockaddr.split<sockaddr.find(':')>();
-constexpr auto host = hp.first; // host == "www.server.com"
+constexpr auto hp = sockaddr.split<sockaddr.find(L':')>();
+constexpr auto host = hp.first; // host == L"www.server.com"
 constexpr int port = SSTOI(hp.second); // port == 8080
 ```
 

@@ -177,26 +177,26 @@ int main() {
     static_assert("Hello"_ss >= "Hella"_ss, "");
 
     // static_string_concat() tests
-    static_assert(static_string_concat() == "", "");
-    static_assert(static_string_concat("") == "", "");
-    static_assert(static_string_concat("", "") == "", "");
-    static_assert(static_string_concat("", "", "") == "", "");
-    static_assert(static_string_concat("", ""_ss, "") == "", "");
-    static_assert(static_string_concat(""_ss, "", ""_ss) == "", "");
-    static_assert(static_string_concat(""_ss, ""_ss, ""_ss) == "", "");
-    static_assert(static_string_concat("Hello") == "Hello", "");
-    static_assert(static_string_concat("", "Hello") == "Hello", "");
-    static_assert(static_string_concat("", "Hello", "") == "Hello", "");
-    static_assert(static_string_concat("", "Hello"_ss, "") == "Hello", "");
-    static_assert(static_string_concat(""_ss, "", "Hello"_ss) == "Hello", "");
-    static_assert(static_string_concat("Hello"_ss, ""_ss, ""_ss) == "Hello", "");
-    static_assert(static_string_concat("Hello", "World") == "HelloWorld", "");
-    static_assert(static_string_concat("Hello"_ss, "World") == "HelloWorld", "");
-    static_assert(static_string_concat("Hello", "World"_ss) == "HelloWorld", "");
-    static_assert(static_string_concat("Hello"_ss, "World"_ss) == "HelloWorld", "");
-    static_assert(static_string_concat("Hello", ", ", "World", "!") == "Hello, World!", "");
-    static_assert(static_string_concat("Hello"_ss, ", ", "World"_ss, "!") == "Hello, World!", "");
-    static_assert(static_string_concat("Hello"_ss, ", "_ss, "World"_ss, "!"_ss) == "Hello, World!", "");
+    static_assert(static_string::concat() == "", "");
+    static_assert(static_string::concat("") == "", "");
+    static_assert(static_string::concat("", "") == "", "");
+    static_assert(static_string::concat("", "", "") == "", "");
+    static_assert(static_string::concat("", ""_ss, "") == "", "");
+    static_assert(static_string::concat(""_ss, "", ""_ss) == "", "");
+    static_assert(static_string::concat(""_ss, ""_ss, ""_ss) == "", "");
+    static_assert(static_string::concat("Hello") == "Hello", "");
+    static_assert(static_string::concat("", "Hello") == "Hello", "");
+    static_assert(static_string::concat("", "Hello", "") == "Hello", "");
+    static_assert(static_string::concat("", "Hello"_ss, "") == "Hello", "");
+    static_assert(static_string::concat(""_ss, "", "Hello"_ss) == "Hello", "");
+    static_assert(static_string::concat("Hello"_ss, ""_ss, ""_ss) == "Hello", "");
+    static_assert(static_string::concat("Hello", "World") == "HelloWorld", "");
+    static_assert(static_string::concat("Hello"_ss, "World") == "HelloWorld", "");
+    static_assert(static_string::concat("Hello", "World"_ss) == "HelloWorld", "");
+    static_assert(static_string::concat("Hello"_ss, "World"_ss) == "HelloWorld", "");
+    static_assert(static_string::concat("Hello", ", ", "World", "!") == "Hello, World!", "");
+    static_assert(static_string::concat("Hello"_ss, ", ", "World"_ss, "!") == "Hello, World!", "");
+    static_assert(static_string::concat("Hello"_ss, ", "_ss, "World"_ss, "!"_ss) == "Hello, World!", "");
 
     // concatenation operator tests
     static_assert("Hello"_ss + "World" == "HelloWorld", "");
@@ -1276,16 +1276,19 @@ int main() {
     static_assert(!ss3.contains("cabcabca"), "");
     static_assert(!ss3.contains("acabcabc"), "");
 
+    // example #0
+    std::cout << "Hello "_ss + "World!" << std::endl;
+
     // example #1
-    constexpr char name[] = "Andrew";
-    constexpr auto str1 = static_string_concat("Hello, ", name, "!");
-    static_assert(str1 == "Hello, Andrew!", "");
-    std::cout << str1 << std::endl;
+    constexpr wchar_t name[] = L"Andrew";
+    constexpr auto str1 = static_wstring::concat(L"Hello, ", name, L"!");
+    static_assert(str1 == L"Hello, Andrew!", "");
+    std::wcout << str1 << std::endl;
 
     // example #2
     constexpr char country[] = "Great Britain";
     constexpr char captital[] = "London";
-    constexpr auto str2 = static_string_concat(captital, " is a capital of ", country);
+    constexpr auto str2 = static_string::concat(captital, " is a capital of ", country);
     static_assert(str2 == "London is a capital of Great Britain", "");
     std::cout << str2 << std::endl;
 
@@ -1293,14 +1296,14 @@ int main() {
     constexpr int apples = 5;
     constexpr int oranges = 7;
     constexpr int fruits = apples + oranges;
-    constexpr auto str3 = static_string_concat("I have ", ITOSS(apples), " apples and ",
-        ITOSS(oranges), " oranges, so I have ", ITOSS(fruits), " fruits");
-    static_assert(str3 == "I have 5 apples and 7 oranges, so I have 12 fruits", "");
-    std::cout << str3 << std::endl;
+    constexpr auto str3 = static_wstring::concat(L"I have ", ITOSW(apples), L" apples and ",
+        ITOSW(oranges), L" oranges, so I have ", ITOSW(fruits), L" fruits");
+    static_assert(str3 == L"I have 5 apples and 7 oranges, so I have 12 fruits", "");
+    std::wcout << str3 << std::endl;
 
     // example #4
-    constexpr auto sstr = static_string_concat("1 + 1 = ", ITOSS(1 + 1));
-    constexpr auto sstr1 = static_string_concat(sstr, ", 2 + 2 = ", ITOSS(2 + 2));
+    constexpr auto sstr = static_string::concat("1 + 1 = ", ITOSS(1 + 1));
+    constexpr auto sstr1 = static_string::concat(sstr, ", 2 + 2 = ", ITOSS(2 + 2));
     static_assert(sstr == "1 + 1 = 2", "");
     static_assert(sstr1 == "1 + 1 = 2, 2 + 2 = 4", "");
     std::string str = to_string(sstr1);
