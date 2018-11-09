@@ -44,7 +44,7 @@ Get static string length and size
 ```cpp
 constexpr auto str = L"Hello"_ss;
 constexpr size_t length = str.length(); // length == 5
-constexpr size_t size = str.size(); // size == 6
+constexpr size_t size = str.size(); // size == 5
 ```
 
 Access static string symbols
