@@ -19,7 +19,6 @@ matrix:
       compiler: gcc
       env:
         - COMPILER=g++-6
-        - CXXFLAGS=-std=c++14
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -30,7 +29,6 @@ matrix:
       compiler: gcc
       env:
         - COMPILER=g++-7
-        - CXXFLAGS=-std=c++14
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -41,7 +39,6 @@ matrix:
       compiler: gcc
       env:
         - COMPILER=g++-8
-        - CXXFLAGS=-std=c++14
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
