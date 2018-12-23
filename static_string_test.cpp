@@ -6,6 +6,15 @@
 using namespace snw1;
 
 int main() {
+    { // make() tests
+        constexpr char c[] = "abc";
+        constexpr auto s = static_string::make(c);
+        static_assert(s == "abc", "");
+        constexpr wchar_t wc[] = L"abc";
+        constexpr auto ws = static_wstring::make(wc);
+        static_assert(ws == L"abc", "");
+    }
+
     // literal operator tests
     static_assert(""_ss.empty(), "");
     static_assert("H"_ss == "H", "");

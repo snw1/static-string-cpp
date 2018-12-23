@@ -243,6 +243,9 @@ template<typename Char, size_t Size> struct basic_static_string {
     constexpr bool empty() const {
         return Size < 2;
     }
+    template<size_t StrSize> static constexpr auto make(const Char (& str)[StrSize]) {
+        return __static_string_detail::make<Char>(str);
+    }
     static constexpr auto concat() {
         return static_string_concat<Char>();
     }
