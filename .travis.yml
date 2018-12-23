@@ -18,7 +18,7 @@ matrix:
     - os: linux
       compiler: gcc
       env:
-        - COMPILER=g++-8
+        - COMPILER=g++-6
         - CXXFLAGS=-std=c++14
       addons:
         apt:
@@ -29,7 +29,7 @@ matrix:
     - os: linux
       compiler: gcc
       env:
-        - COMPILER=g++-8
+        - COMPILER=g++-7
         - CXXFLAGS=-std=c++14
       addons:
         apt:
