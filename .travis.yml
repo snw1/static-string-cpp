@@ -12,15 +12,35 @@ language: cpp
 matrix:
   include:
 
-    # gcc 5.2
+    # gcc 6
     - os: linux
       compiler: gcc
       env:
-        - COMPILER=g++-5.2
+        - COMPILER=g++-6
         - CXXFLAGS=-std=c++14
       addons:
         apt:
-          packages: ['g++-5.2']
+          packages: ['g++-6']
+
+    # gcc 7
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-7
+        - CXXFLAGS=-std=c++14
+      addons:
+        apt:
+          packages: ['g++-7']
+
+    # gcc 8
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-8
+        - CXXFLAGS=-std=c++14
+      addons:
+        apt:
+          packages: ['g++-8']
 
 ################
 # build script #
