@@ -14,18 +14,18 @@ sudo: required
 matrix:
   include:
 
-    # gcc 5.2
+    # gcc 5, c++14
     - os: linux
       compiler: gcc
       env:
-        - COMPILER=g++-5.2
-        - CXXFLAGS=-std=c++14
+        - COMPILER=g++-5
+        - CXXFLAGS=-std=c++1y
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5.2', 'cmake']
+          packages: ['g++-5', 'cmake']
 
-    # gcc 6
+    # gcc 6, c++14
     - os: linux
       compiler: gcc
       env:
@@ -36,7 +36,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6', 'cmake']
 
-    # gcc 7
+    # gcc 7, c++14
     - os: linux
       compiler: gcc
       env:
@@ -47,12 +47,23 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-7', 'cmake']
 
-    # gcc 8
+    # gcc 8, c++14
     - os: linux
       compiler: gcc
       env:
         - COMPILER=g++-8
         - CXXFLAGS=-std=c++14
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-8', 'cmake']
+
+    # gcc 8, c++17
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-8
+        - CXXFLAGS=-std=c++17
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
