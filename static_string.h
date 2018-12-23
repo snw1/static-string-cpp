@@ -1,6 +1,6 @@
 /*
 Compile-time string manipulation library for modern C++
-version 0.0.31
+version 0.0.32
 https://github.com/snw1/static-string-cpp
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>.
@@ -181,12 +181,6 @@ constexpr basic_static_string<Char, Size1 + Size2 - 1> concat(
         str2, make_index_sequence<Size2 - 1>{});
 }
 
-constexpr size_t length(long long value, size_t first) {
-    return value == 0 ? first :
-        value > 0 ? 1 + length(value / 10, 0) :
-            2 + length(-(value / 10), 0);
-}
-
 template<typename Char, size_t Size>
 constexpr unsigned long long hash(const basic_static_string<Char, Size>& str, size_t index) {
     return index >= Size - 1 ? 5381ULL :
@@ -341,33 +335,6 @@ std::basic_ostream<Char>& operator<<(std::basic_ostream<Char>& bos, const basic_
 template<typename Char, size_t Size>
 std::basic_string<Char> to_string(const basic_static_string<Char, Size>& str) {
     return std::basic_string<Char>(str.data.data());
-}
-
-constexpr size_t static_length() {
-    return 0;
-}
-
-template<typename Char, size_t Size>
-constexpr size_t static_length(const Char (& str)[Size]) {
-    return Size - 1;
-}
-
-template<typename Char, size_t Size>
-constexpr size_t static_length(const basic_static_string<Char, Size>& str) {
-    return Size - 1;
-}
-
-constexpr size_t static_length(long long value) {
-    return __static_string_detail::length(value, 1);
-}
-
-constexpr size_t static_concat_length() {
-    return 0;
-}
-
-template<typename Arg, typename ... Args>
-constexpr size_t static_concat_length(Arg&& arg, Args&& ... args) {
-    return static_length(std::forward<Arg>(arg)) + static_concat_length(std::forward<Args>(args) ...);
 }
 
 template<typename Char>

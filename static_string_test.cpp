@@ -21,61 +21,6 @@ int main() {
     static_assert("Hello"_ss == "Hello", "");
     static_assert("Hello world"_ss == "Hello world", "");
 
-    // static_length() tests
-    static_assert(static_length() == 0, "");
-    static_assert(static_length("") == 0, "");
-    static_assert(static_length("H") == 1, "");
-    static_assert(static_length("Hello") == 5, "");
-    static_assert(static_length("Hello world") == 11, "");
-    static_assert(static_length(""_ss) == 0, "");
-    static_assert(static_length("H"_ss) == 1, "");
-    static_assert(static_length("Hello"_ss) == 5, "");
-    static_assert(static_length("Hello world"_ss) == 11, "");
-    static_assert(static_length(0) == 1, "");
-    static_assert(static_length(1) == 1, "");
-    static_assert(static_length(9) == 1, "");
-    static_assert(static_length(10) == 2, "");
-    static_assert(static_length(11) == 2, "");
-    static_assert(static_length(14) == 2, "");
-    static_assert(static_length(19) == 2, "");
-    static_assert(static_length(99) == 2, "");
-    static_assert(static_length(873) == 3, "");
-    static_assert(static_length(496850) == 6, "");
-    static_assert(static_length(853104678) == 9, "");
-    static_assert(static_length(2147483647) == 10, "");
-    static_assert(static_length(4294967295U) == 10, "");
-    static_assert(static_length(827394274920LL) == 12, "");
-    static_assert(static_length(294653986395673LL) == 15, "");
-    static_assert(static_length(973946584364859472LL) == 18, "");
-    static_assert(static_length(9223372036854775807LL) == 19, "");
-    static_assert(static_length(std::numeric_limits<long long>::max()) == 19, "");
-    static_assert(static_length(-1) == 2, "");
-    static_assert(static_length(-9) == 2, "");
-    static_assert(static_length(-10) == 3, "");
-    static_assert(static_length(-11) == 3, "");
-    static_assert(static_length(-14) == 3, "");
-    static_assert(static_length(-19) == 3, "");
-    static_assert(static_length(-99) == 3, "");
-    static_assert(static_length(-873) == 4, "");
-    static_assert(static_length(-496850) == 7, "");
-    static_assert(static_length(-853104678) == 10, "");
-    static_assert(static_length(-2147483647) == 11, "");
-    static_assert(static_length(-827394274920LL) == 13, "");
-    static_assert(static_length(-294653986395673LL) == 16, "");
-    static_assert(static_length(-973946584364859472LL) == 19, "");
-    static_assert(static_length(-9223372036854775807LL) == 20, "");
-    static_assert(static_length(std::numeric_limits<long long>::min()) == 20, "");
-
-    // static_concat_length() tests
-    static_assert(static_concat_length() == 0, "");
-    static_assert(static_concat_length(""_ss) == 0, "");
-    static_assert(static_concat_length("") == 0, "");
-    static_assert(static_concat_length(""_ss) == 0, "");
-    static_assert(static_concat_length("H"_ss) == 1, "");
-    static_assert(static_concat_length("Hello") == 5, "");
-    static_assert(static_concat_length("Hello"_ss, "World") == 10, "");
-    static_assert(static_concat_length("Hello", -294653986395673LL, "World"_ss, 45678) == 31, "");
-
     // static_string sizeof() tests
     static_assert(sizeof(""_ss) == 1, "");
     static_assert(sizeof(""_ss) == 1, "");
