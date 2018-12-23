@@ -4,6 +4,8 @@
 
 # C++ project
 language: cpp
+dist: trusty
+sudo: required
 
 ################
 # build matrix #
@@ -20,7 +22,7 @@ matrix:
         - CXXFLAGS=-std=c++14
       addons:
         apt:
-          packages: ['g++-6']
+          packages: ['g++-6', 'cmake']
 
     # gcc 7
     - os: linux
@@ -30,7 +32,7 @@ matrix:
         - CXXFLAGS=-std=c++14
       addons:
         apt:
-          packages: ['g++-7']
+          packages: ['g++-7', 'cmake']
 
     # gcc 8
     - os: linux
@@ -40,7 +42,7 @@ matrix:
         - CXXFLAGS=-std=c++14
       addons:
         apt:
-          packages: ['g++-8']
+          packages: ['g++-8', 'cmake']
 
 ################
 # build script #
