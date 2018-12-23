@@ -1,0 +1,32 @@
+#########################
+# project configuration #
+#########################
+
+# C++ project
+language: cpp
+
+################
+# build matrix #
+################
+
+matrix:
+  include:
+
+    # gcc 5.2
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-5.2
+        - CXXFLAGS=-std=c++14
+      addons:
+        apt:
+          packages: ['g++-5.2']
+
+################
+# build script #
+################
+
+script:
+  - mkdir -p build && cd build
+  - cmake .. && cmake --build . --config Release
+  - cd ..
