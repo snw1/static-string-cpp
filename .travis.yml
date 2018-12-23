@@ -14,6 +14,17 @@ sudo: required
 matrix:
   include:
 
+    # gcc 5.2
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-5.2
+        - CXXFLAGS=-std=c++14
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5.2', 'cmake']
+
     # gcc 6
     - os: linux
       compiler: gcc
