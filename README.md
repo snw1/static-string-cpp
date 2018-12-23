@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/snw1/static-string-cpp.svg?branch=master)](https://travis-ci.org/snw1/static-string-cpp)
+
 ## static-string-cpp
 
 Compile-time string manipulation library for modern C++
