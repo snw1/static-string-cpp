@@ -18,7 +18,8 @@ matrix:
     - os: linux
       compiler: gcc
       env:
-        - COMPILER=g++-6
+        - COMPILER=g++-8
+        - CXXFLAGS=-std=c++14
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -28,7 +29,8 @@ matrix:
     - os: linux
       compiler: gcc
       env:
-        - COMPILER=g++-7
+        - COMPILER=g++-8
+        - CXXFLAGS=-std=c++14
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -39,6 +41,7 @@ matrix:
       compiler: gcc
       env:
         - COMPILER=g++-8
+        - CXXFLAGS=-std=c++14
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -49,6 +52,11 @@ matrix:
 ################
 
 script:
+  - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
+
+  - uname -a
+  - $CXX --version
+
   - mkdir -p build && cd build
   - cmake .. && cmake --build . --config Release
   - cd ..
