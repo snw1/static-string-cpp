@@ -1,6 +1,6 @@
 /*
 Compile-time string manipulation library for modern C++
-version 1.0.0
+version 1.0.1
 https://github.com/snw1/static-string-cpp
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>.
@@ -222,6 +222,28 @@ std::basic_string<Char> to_string(const basic_static_string<Char, Size>& str) {
     return std::basic_string<Char>(str.data.data());
 }
 
+template<typename Char>
+constexpr Char lower(Char ch) {
+    return ch < static_cast<Char>('A') || ch > static_cast<Char>('Z') ? ch :
+        ch - static_cast<Char>('A') + static_cast<Char>('a');
+}
+
+template<typename Char>
+constexpr Char upper(Char ch) {
+    return ch < static_cast<Char>('a') || ch > static_cast<Char>('z') ? ch :
+        ch - static_cast<Char>('a') + static_cast<Char>('A');
+}
+
+template<typename Char, size_t Size, size_t ... Indexes>
+constexpr basic_static_string<Char, Size> lower(const basic_static_string<Char, Size>& str, index_sequence<Indexes ...>) {
+    return {lower(str.data[Indexes]) ...};
+}
+
+template<typename Char, size_t Size, size_t ... Indexes>
+constexpr basic_static_string<Char, Size> upper(const basic_static_string<Char, Size>& str, index_sequence<Indexes ...>) {
+    return {upper(str.data[Indexes]) ...};
+}
+
 } // namespace __static_string_detail
 
 template<typename Char, size_t Size> struct basic_static_string {
@@ -331,6 +353,12 @@ template<typename Char, size_t Size> struct basic_static_string {
     }
     std::string str() const {
         return __static_string_detail::to_string(*this);
+    }
+    constexpr auto lower() const {
+        return __static_string_detail::lower(*this, __static_string_detail::make_index_sequence<Size>{});
+    }
+    constexpr auto upper() const {
+        return __static_string_detail::upper(*this, __static_string_detail::make_index_sequence<Size>{});
     }
     std::array<const Char, Size> data;
 };

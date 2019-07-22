@@ -511,6 +511,20 @@ int main() {
     static_assert(!"abcabca"_ss.ends_with("abcaba"_ss), "");
     static_assert(!"abcabca"_ss.ends_with("acabca"_ss), "");
 
+    // lower() tests
+    static_assert(""_ss.lower() == "", "");
+    static_assert("H"_ss.lower() == "h", "");
+    static_assert("He"_ss.lower() == "he", "");
+    static_assert("HeLlO"_ss.lower() == "hello", "");
+    static_assert("abcABCxyzXYZ"_ss.lower() == "abcabcxyzxyz", "");
+
+    // upper() tests
+    static_assert(""_ss.upper() == "", "");
+    static_assert("h"_ss.upper() == "H", "");
+    static_assert("He"_ss.upper() == "HE", "");
+    static_assert("HeLlO"_ss.upper() == "HELLO", "");
+    static_assert("abcABCxyzXYZ"_ss.upper() == "ABCABCXYZXYZ", "");
+
     { // split() tests
         constexpr auto ss = "abracadabra"_ss;
         static_assert(ss.split<5>() == std::make_pair("abrac"_ss, "dabra"_ss), "");
