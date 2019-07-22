@@ -134,10 +134,10 @@ constexpr int compare(
     size_t cur_length, size_t max_length) {
     return cur_length > max_length || (index1 >= Size1 && index2 >= Size2) ? 0 :
         index1 >= Size1 ? -1 :
-            index2 >= Size2 ? 1 :
-                str1.data[index1] > str2.data[index2] ? 1 :
-                    str1.data[index1] < str2.data[index2] ? -1 :
-                        compare(str1, index1 + 1, str2, index2 + 1, cur_length + 1, max_length);
+        index2 >= Size2 ? 1 :
+        str1.data[index1] > str2.data[index2] ? 1 :
+        str1.data[index1] < str2.data[index2] ? -1 :
+        compare(str1, index1 + 1, str2, index2 + 1, cur_length + 1, max_length);
 }
 
 template<typename Char, size_t Size1, size_t Size2>
@@ -201,14 +201,14 @@ template<typename Char, size_t Size>
 constexpr long long to_int(const basic_static_string<Char, Size>& str, size_t index, size_t first) {
     return index < first || index >= Size - 1 ? 0 :
         first == 0 ? (str.data[index] - '0') + 10LL * to_int(str, index - 1, first) :
-            -(str.data[index] - '0') + 10LL * to_int(str, index - 1, first);
+        -(str.data[index] - '0') + 10LL * to_int(str, index - 1, first);
 }
 
 template<typename Char, size_t Size>
 constexpr long long to_int(const basic_static_string<Char, Size>& str) {
     return Size < 2 ? 0LL :
         str.data[0] == '-' ? __static_string_detail::to_int(str, Size - 2, 1) :
-            __static_string_detail::to_int(str, Size - 2, 0);
+        __static_string_detail::to_int(str, Size - 2, 0);
 }
 
 template<typename Char, size_t Size>
@@ -289,12 +289,12 @@ template<typename Char, size_t Size> struct basic_static_string {
     constexpr size_t find(Char ch, size_t from = 0, size_t nth = 0) const {
         return Size < 2 || from >= Size - 1 ? npos :
             data[from] != ch ? find(ch, from + 1, nth) :
-                nth > 0 ? find(ch, from + 1, nth - 1) : from;
+            nth > 0 ? find(ch, from + 1, nth - 1) : from;
     }
     template<size_t SubSize> constexpr size_t find(const basic_static_string<Char, SubSize>& substr, size_t from = 0, size_t nth = 0) const {
         return Size < SubSize || from > Size - SubSize ? npos :
             __static_string_detail::compare(*this, from, substr, 0, 1, SubSize - 1) != 0 ? find(substr, from + 1, nth) :
-                nth > 0 ? find(substr, from + 1, nth - 1) : from;
+            nth > 0 ? find(substr, from + 1, nth - 1) : from;
     }
     template<size_t SubSize> constexpr size_t find(const Char (& substr)[SubSize], size_t from = 0, size_t nth = 0) const {
         return find(__static_string_detail::make(substr), from, nth);
@@ -302,12 +302,12 @@ template<typename Char, size_t Size> struct basic_static_string {
     constexpr size_t rfind(Char ch, size_t from = Size - 2, size_t nth = 0) const {
         return Size < 2 || from > Size - 2 ? npos :
             data[from] != ch ? rfind(ch, from - 1, nth) :
-                nth > 0 ? rfind(ch, from - 1, nth - 1) : from;
+            nth > 0 ? rfind(ch, from - 1, nth - 1) : from;
     }
     template<size_t SubSize> constexpr size_t rfind(const basic_static_string<Char, SubSize>& substr, size_t from = Size - SubSize, size_t nth = 0) const {
         return Size < SubSize || from > Size - SubSize ? npos :
             __static_string_detail::compare(*this, from, substr, 0, 1, SubSize - 1) != 0 ? rfind(substr, from - 1, nth) :
-                nth > 0 ? rfind(substr, from - 1, nth - 1) : from;
+            nth > 0 ? rfind(substr, from - 1, nth - 1) : from;
     }
     template<size_t SubSize> constexpr size_t rfind(const Char (& substr)[SubSize], size_t from = Size - SubSize, size_t nth = 0) const {
         return rfind(__static_string_detail::make(substr), from, nth);
