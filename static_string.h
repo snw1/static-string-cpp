@@ -200,21 +200,21 @@ constexpr size_t count(const basic_static_string<Char, Size>& str, Char ch, size
 template<typename Char, size_t Size>
 constexpr long long to_int(const basic_static_string<Char, Size>& str, size_t index, size_t first) {
     return index < first || index >= Size - 1 ? 0 :
-        first == 0 ? (str.data[index] - '0') + 10LL * to_int(str, index - 1, first) :
-        -(str.data[index] - '0') + 10LL * to_int(str, index - 1, first);
+        first == 0 ? (str.data[index] - static_cast<Char>('0')) + 10LL * to_int(str, index - 1, first) :
+        -(str.data[index] - static_cast<Char>('0')) + 10LL * to_int(str, index - 1, first);
 }
 
 template<typename Char, size_t Size>
 constexpr long long to_int(const basic_static_string<Char, Size>& str) {
     return Size < 2 ? 0LL :
-        str.data[0] == '-' ? __static_string_detail::to_int(str, Size - 2, 1) :
+        str.data[0] == static_cast<Char>('-') ? __static_string_detail::to_int(str, Size - 2, 1) :
         __static_string_detail::to_int(str, Size - 2, 0);
 }
 
 template<typename Char, size_t Size>
 constexpr unsigned long long to_uint(const basic_static_string<Char, Size>& str, size_t index) {
     return Size < 2 || index >= Size - 1 ? 0 :
-        (str.data[index] - '0') + 10ULL * to_uint(str, index - 1);
+        (str.data[index] - static_cast<Char>('0')) + 10ULL * to_uint(str, index - 1);
 }
 
 template<typename Char, size_t Size>
