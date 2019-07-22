@@ -19,10 +19,28 @@ int main() {
     static_assert("Hello world"_ss == "Hello world", "");
 
     // sizeof() tests
-    static_assert(sizeof(""_ss) == 1, "");
-    static_assert(sizeof("H"_ss) == 2, "");
-    static_assert(sizeof("Hello"_ss) == 6, "");
-    static_assert(sizeof("Hello world"_ss) == 12, "");
+    static_assert(sizeof(""_ss) == 1 * sizeof(char), "");
+    static_assert(sizeof("H"_ss) == 2 * sizeof(char), "");
+    static_assert(sizeof("Hello"_ss) == 6 * sizeof(char), "");
+    static_assert(sizeof("Hello world"_ss) == 12 * sizeof(char), "");
+    static_assert(sizeof("Hello"_ss + " world") == 12 * sizeof(char), "");
+    static_assert(sizeof(L""_ss) == 1 * sizeof(wchar_t), "");
+    static_assert(sizeof(L"H"_ss) == 2 * sizeof(wchar_t), "");
+    static_assert(sizeof(L"Hello"_ss) == 6 * sizeof(wchar_t), "");
+    static_assert(sizeof(L"Hello world"_ss) == 12 * sizeof(wchar_t), "");
+    static_assert(sizeof(L"Hello"_ss + L" world") == 12 * sizeof(wchar_t), "");
+
+    // size(), length() tests
+    static_assert(""_ss.size() == 0, "");
+    static_assert("H"_ss.size() == 1, "");
+    static_assert("Hello"_ss.size() == 5, "");
+    static_assert("Hello world"_ss.size() == 11, "");
+    static_assert(("Hello"_ss + " world").size() == 11, "");
+    static_assert(""_ss.length() == 0, "");
+    static_assert("H"_ss.length() == 1, "");
+    static_assert("Hello"_ss.length() == 5, "");
+    static_assert("Hello world"_ss.length() == 11, "");
+    static_assert(("Hello"_ss + " world").length() == 11, "");
 
     // comparison operators tests
     static_assert(""_ss == "", "");
@@ -284,7 +302,7 @@ int main() {
     static_assert("ccbacdbacdbacdbdacbdacdacbdacdcbdadcabacbadcbdacdabcdabcdabdc"_ss.find("bdc"_ss, 59) == static_string::npos, "");
     static_assert("ccbacdbacdbacdbdacbdacdacbdacdcbdadcabacbadcbdacdabcdabcdabdc"_ss.find("bdc"_ss, 0, 1) == static_string::npos, "");
 
-    // static_string_rfind(str) tests
+    // rfind(str) tests
     static_assert(""_ss.rfind("") == 0, "");
     static_assert(""_ss.rfind("", 1) == static_string::npos, "");
     static_assert(""_ss.rfind("", 0, 1) == static_string::npos, "");
@@ -664,7 +682,7 @@ int main() {
         static_assert(ss0.empty(), "");
         static_assert(ss0.length() == 0, "");
         static_assert(ss0.size() == 0, "");
-        static_assert(sizeof(ss0) == 1, "");
+        static_assert(sizeof(ss0) == 1 * sizeof(char), "");
         static_assert(ss0.reverse() == "", "");
         static_assert(ss0.substring<0, 0>() == "", "");
         static_assert(ss0.prefix<0>() == "", "");
@@ -673,7 +691,7 @@ int main() {
         static_assert(!ss1.empty(), "");
         static_assert(ss1.length() == 5, "");
         static_assert(ss1.size() == 5, "");
-        static_assert(sizeof(ss1) == 6, "");
+        static_assert(sizeof(ss1) == 6 * sizeof(char), "");
         static_assert(ss1.reverse() == "olleH", "");
         static_assert(ss1.substring<0, 5>() == "Hello", "");
         static_assert(ss1.substring<3, 3>() == "", "");
